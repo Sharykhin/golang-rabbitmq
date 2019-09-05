@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+  publisher:
+    build:
+      context: .
+      dockerfile: .docker/golang/Dockerfile
+    command: CompileDaemon -log-prefix=false -build="go build -o publisher ./cmd/publisher" -command="./publisher" -graceful-kill=true
+    tty: true
+    depends_on:
+      - rabbitmq
+  consumer_one:
+    build:
+      context: .
+      dockerfile: .docker/golang/Dockerfile
+    command: CompileDaemon -log-prefix=false -build="go build -o consumer ./cmd/consumer" -command="./consumer" -graceful-kill=true
+    environment:
+      - NAME="ONE"
+    tty: true
+    depends_on:
+      - rabbitmq
+  consumer_two:
+    build:
+      context: .
+      dockerfile: .docker/golang/Dockerfile
+    command: CompileDaemon -log-prefix=false -build="go build -o consumer ./cmd/consumer" -command="./consumer" -graceful-kill=true
+    environment:
+      - NAME="TWO"
+    tty: true
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    build:
+      context: .
+      dockerfile: .docker/rabbitmq/Dockerfile
+    ports:
+      - 15672:15672
+
