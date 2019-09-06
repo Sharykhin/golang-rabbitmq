@@ -16,6 +16,7 @@ func failOnError(err error, msg string) {
 
 func main() {
 	name := os.Getenv("NAME")
+	queueName := os.Getenv("QUEUE_NAME")
 	time.Sleep(5 * time.Second)
 	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
@@ -37,12 +38,12 @@ func main() {
 	failOnError(err, "Failed to declare an exchange")
 
 	q, err := ch.QueueDeclare(
-		"",    // name
-		false, // durable
-		false, // delete when usused
-		true,  // exclusive
-		false, // no-wait
-		nil,   // arguments
+		queueName, // name
+		false,     // durable
+		false,     // delete when usused
+		false,     // exclusive
+		false,     // no-wait
+		nil,       // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
 

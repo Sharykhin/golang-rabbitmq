@@ -17,6 +17,7 @@ services:
     command: CompileDaemon -log-prefix=false -build="go build -o consumer ./cmd/consumer" -command="./consumer" -graceful-kill=true
     environment:
       - NAME="SERVICE ONE INSTANCE ONE"
+      - QUEUE_NAME="SERVICE_ONE"
     tty: true
     depends_on:
       - rabbitmq
@@ -28,6 +29,7 @@ services:
     command: CompileDaemon -log-prefix=false -build="go build -o consumer ./cmd/consumer" -command="./consumer" -graceful-kill=true
     environment:
       - NAME="SERVICE TWO INSTANCE ONE"
+      - QUEUE_NAME="SERVICE_TWO"
     tty: true
     depends_on:
       - rabbitmq
@@ -39,6 +41,7 @@ services:
     command: CompileDaemon -log-prefix=false -build="go build -o consumer ./cmd/consumer" -command="./consumer" -graceful-kill=true
     environment:
       - NAME="SERVICE TWO INSTANCE TWO"
+      - QUEUE_NAME="SERVICE_TWO"
     tty: true
     depends_on:
       - rabbitmq
