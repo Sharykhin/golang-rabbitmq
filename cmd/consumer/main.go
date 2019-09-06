@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -16,6 +17,8 @@ func failOnError(err error, msg string) {
 
 func main() {
 	name := os.Getenv("NAME")
+	routingKey := os.Getenv("ROUTING_KEY")
+	fmt.Println("ROUTING KEY", routingKey)
 	time.Sleep(5 * time.Second)
 	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
@@ -26,13 +29,13 @@ func main() {
 	defer ch.Close()
 
 	err = ch.ExchangeDeclare(
-		"logs",   // name
-		"fanout", // type
-		true,     // durable
-		false,    // auto-deleted
-		false,    // internal
-		false,    // no-wait
-		nil,      // arguments
+		"logs_direct", // name
+		"direct",      // type
+		true,          // durable
+		false,         // auto-deleted
+		false,         // internal
+		false,         // no-wait
+		nil,           // arguments
 	)
 	failOnError(err, "Failed to declare an exchange")
 
@@ -47,12 +50,11 @@ func main() {
 	failOnError(err, "Failed to declare a queue")
 
 	err = ch.QueueBind(
-		q.Name, // queue name
-		"",     // routing key
-		"logs", // exchange
+		q.Name,        // queue name
+		routingKey,    // routing key
+		"logs_direct", // exchange
 		false,
-		nil,
-	)
+		nil)
 	failOnError(err, "Failed to bind a queue")
 
 	msgs, err := ch.Consume(
