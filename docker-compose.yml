@@ -9,23 +9,36 @@ services:
     tty: true
     depends_on:
       - rabbitmq
+
   consumer_one:
     build:
       context: .
       dockerfile: .docker/golang/Dockerfile
     command: CompileDaemon -log-prefix=false -build="go build -o consumer ./cmd/consumer" -command="./consumer" -graceful-kill=true
     environment:
-      - NAME="ONE"
+      - NAME="SERVICE ONE INSTANCE ONE"
     tty: true
     depends_on:
       - rabbitmq
+
   consumer_two:
     build:
       context: .
       dockerfile: .docker/golang/Dockerfile
     command: CompileDaemon -log-prefix=false -build="go build -o consumer ./cmd/consumer" -command="./consumer" -graceful-kill=true
     environment:
-      - NAME="TWO"
+      - NAME="SERVICE TWO INSTANCE ONE"
+    tty: true
+    depends_on:
+      - rabbitmq
+
+  consumer_three:
+    build:
+      context: .
+      dockerfile: .docker/golang/Dockerfile
+    command: CompileDaemon -log-prefix=false -build="go build -o consumer ./cmd/consumer" -command="./consumer" -graceful-kill=true
+    environment:
+      - NAME="SERVICE TWO INSTANCE TWO"
     tty: true
     depends_on:
       - rabbitmq
